@@ -60,10 +60,10 @@ function validateLogInput(stack, level, packageName, message) {
 async function Log(stack, level, packageName, message) {
   validateLogInput(stack, level, packageName, message);
 
-  const token = process.env.AFFORDMED_ACCESS_TOKEN;
+  const token = process.env.ACCESS_TOKEN;
 
   if (!token) {
-    throw new Error("AFFORDMED_ACCESS_TOKEN environment variable is required.");
+    throw new Error("ACCESS_TOKEN environment variable is required.");
   }
 
   const response = await fetch(LOG_API_URL, {

@@ -3,7 +3,7 @@
 ## Run
 
 ```bash
-export AFFORDMED_ACCESS_TOKEN='token'
+export ACCESS_TOKEN='token'
 npm run run
 ```
 

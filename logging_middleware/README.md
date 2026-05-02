@@ -3,7 +3,7 @@
 ## Setup
 
 ```bash
-export AFFORDMED_ACCESS_TOKEN='token'
+export ACCESS_TOKEN='token'
 ```
 
 ## Usage

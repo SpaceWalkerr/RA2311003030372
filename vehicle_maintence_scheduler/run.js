@@ -13,10 +13,10 @@ async function appLog(level, packageName, message) {
 }
 
 async function getData(apiPath) {
-  const token = process.env.AFFORDMED_ACCESS_TOKEN;
+  const token = process.env.ACCESS_TOKEN;
 
   if (!token) {
-    throw new Error("AFFORDMED_ACCESS_TOKEN is required");
+    throw new Error("ACCESS_TOKEN is required");
   }
 
   const response = await fetch(`${BASE_URL}${apiPath}`, {
