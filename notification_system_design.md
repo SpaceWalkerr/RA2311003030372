@@ -221,3 +221,45 @@ Simple fixes:
 - use pagination
 - send large notifications in batches
 - archive old notifications later
+
+## Stage 3
+
+Given query:
+
+```sql
+SELECT * FROM notifications
+WHERE studentID = 1042 AND isRead = false
+ORDER BY createdAt DESC;
+```
+
+This query is correct for getting unread notifications, but it can be slow when the table becomes large. If there is no index, the database has to check many rows and then sort them by time.
+
+I would not use `SELECT *`. I would fetch only the columns needed by the frontend:
+
+```sql
+SELECT id, notification_type, title, message, created_at
+FROM notifications
+WHERE student_id = 1042 AND is_read = false
+ORDER BY created_at DESC
+LIMIT 20;
+```
+
+Useful index:
+
+```sql
+CREATE INDEX idx_student_read_created
+ON notifications (student_id, is_read, created_at DESC);
+```
+
+This index helps because the query filters by student, filters unread rows, and sorts by latest time.
+
+Adding indexes on every column is not a good idea. It uses more storage and makes insert/update slower. Indexes should be added only where queries need them.
+
+Students who got placement notifications in the last 7 days:
+
+```sql
+SELECT DISTINCT student_id
+FROM notifications
+WHERE notification_type = 'Placement'
+  AND created_at >= NOW() - INTERVAL '7 days';
+```
