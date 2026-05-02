@@ -263,3 +263,28 @@ FROM notifications
 WHERE notification_type = 'Placement'
   AND created_at >= NOW() - INTERVAL '7 days';
 ```
+
+## Stage 4
+
+Fetching notifications from the database on every page load is not a good approach. If many students open pages at the same time, the database will get too many repeated requests.
+
+I would change it like this:
+
+- fetch only unread count on page load
+- fetch full notifications only when the user opens the notification panel
+- use pagination, for example latest 20 notifications first
+- cache unread count for a short time
+- use WebSocket or Server-Sent Events for new notifications
+
+Tradeoffs:
+
+- cache is faster, but the count may be slightly old for a few seconds
+- WebSocket/SSE gives real-time updates, but it needs extra connection handling
+- pagination reduces load, but the frontend has to request more pages when needed
+
+Simple flow:
+
+1. Page loads and calls unread count API.
+2. User opens notification panel.
+3. Frontend calls notification list API with `limit` and `page`.
+4. New notifications are pushed using WebSocket/SSE.
