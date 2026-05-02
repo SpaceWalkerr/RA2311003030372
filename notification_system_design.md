@@ -288,3 +288,44 @@ Simple flow:
 2. User opens notification panel.
 3. Frontend calls notification list API with `limit` and `page`.
 4. New notifications are pushed using WebSocket/SSE.
+
+## Stage 5
+
+The method given has a flaw because it sends email, inserts data into a database, and pushes an app all at the same time in one loop. If email fails after some students have been processed, the system will be stuck in a half-finished state.
+
+Main problems:
+- One slow email call can slow down the whole thing.
+- Trying again can cause notifications to be sent twice.
+- It's hard to keep track of some students who fail.
+- You shouldn't have to deal with 50,000 students in one request.
+
+Sending an email and saving to the database shouldn't be too closely linked. Save the notification and the people who will get it first. Then, use background jobs to send emails and app pushes.
+
+Revised pseudocode:
+
+```text
+function notify_all(student_ids, message, type):
+    notification_id = save_notification(type, message)
+
+    for batch in split(student_ids, 1000):
+        save_recipients(notification_id, batch)
+        add_job("send_email", notification_id, batch)
+        add_job("push_app", notification_id, batch)
+
+    return notification_id
+
+worker send_email(notification_id, batch):
+    for student_id in batch:
+        try:
+            send_email_to_student(student_id, notification_id)
+            mark_email_sent(student_id, notification_id)
+        catch:
+            mark_email_failed(student_id, notification_id)
+            retry_later(student_id, notification_id)
+
+worker push_app(notification_id, batch):
+    for student_id in batch:
+        push_notification(student_id, notification_id)
+```
+
+If email fails for 200 students, only those 200 should be retried. The already successful students should not be processed again.
