@@ -1,0 +1,12 @@
+{
+  "name": "vehicle_maintence_scheduler",
+  "version": "1.0.0",
+  "description": "Vehicle maintenance scheduler",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "run": "node run.js",
+    "test": "node test.js"
+  },
+  "license": "ISC"
+}

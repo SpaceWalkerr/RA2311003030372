@@ -10,6 +10,5 @@
     "logging",
     "middleware"
   ],
-  "author": "Suraj Nandan",
   "license": "ISC"
 }
