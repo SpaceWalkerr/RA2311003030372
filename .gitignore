@@ -1,3 +1,5 @@
 node_modules/
 .env
+.DS_Store
 vehicle_maintence_scheduler/output.json
+notification_app_be/output.json

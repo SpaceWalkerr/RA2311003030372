@@ -329,3 +329,40 @@ worker push_app(notification_id, batch):
 ```
 
 If email fails for 200 students, only those 200 should be retried. The already successful students should not be processed again.
+
+## Stage 6
+
+For the priority inbox, I used this order:
+
+```text
+Placement > Result > Event
+```
+
+If two notifications have the same type the newer one comes first.
+
+The code fetches notifications from the provided API sorts them, and returns the top 10. The implementation is in:
+
+```text
+notification_app_be/priorityInbox.js
+```
+
+To keep top 10 updated when new notifications come in, I would insert the new notification into the current top list, sort it again, and remove extra items after 10. Since the list size is small, this is simple and fast.
+
+Run:
+
+```bash
+cd notification_app_be
+npm run run
+```
+
+Or start local API:
+
+```bash
+npm start
+```
+
+Endpoint:
+
+```http
+GET /priority-inbox?limit=10
+```

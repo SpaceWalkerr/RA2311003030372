@@ -1,0 +1,12 @@
+{
+  "name": "notification_app_be",
+  "version": "1.0.0",
+  "description": "Notification priority inbox",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "run": "node run.js",
+    "test": "node test.js"
+  },
+  "license": "ISC"
+}
